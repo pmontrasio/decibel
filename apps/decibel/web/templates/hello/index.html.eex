@@ -1,0 +1,18 @@
+<div class="jumbotron">
+  <h2>Hello <%= @ip_address %>!</h2>
+  <%= if @mac_address do %>
+  <p>Your mac address is <%= @mac_address %></p>
+  <% else %>
+  <p>Your mac address is unknown.</p>
+  <noscript><p>Reload the page. The mac address should be available in one second.</p></noscript>
+  <script type="text/javascript">
+  //setTimeout(function () { document.location = "/"; }, 1000);
+  </script>
+  <% end %>
+</div>
+
+<p>dBm measurements received on channel rooms:<%= @uuid %></p>
+<p>0 dBm = 0.001 W, -10 dBm = 0.0001 W, -20 dBm = 0.00001 ...
+  -<i>&lt;n&gt;</i>0 dBm = 0.000 <i>&lt;n zeros&gt;</i> 1 W</p>
+<input type="hidden" value="<%= @uuid %>" id="uuid">
+<div id="dbm"></div>

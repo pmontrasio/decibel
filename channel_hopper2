@@ -1,0 +1,56 @@
+#!/bin/dash
+
+usage () {
+   echo "usage: channel_hopper2 interface" 1>&2
+   echo "example: channel_hopper2 wlan0" 1>&2
+}
+
+# You need this to run this script without being root
+# sudo setcap 'CAP_NET_ADMIN+eip' /sbin/iwconfig
+# sudo setcap 'CAP_NET_ADMIN+eip' /sbin/ifconfig
+#
+# Restore the original capabilities with
+# sudo setcap -r /sbin/iwconfig
+# sudo setcap -r /sbin/ifconfig
+
+interface=$1
+if [ -z $interface ]; then
+  usage
+  exit 0
+fi
+
+interval=15
+
+DIR=$( cd $( dirname -- "$0" ) > /dev/null ; pwd )
+PID_FILE=$DIR/channel_hopper2.pid
+
+setup () {
+  ifconfig $interface down
+  iwconfig $interface mode Monitor
+  ifconfig $interface up
+}
+
+tear_down () {
+  kill -9 $(cat $PID_FILE)
+  rm -f $PID_FILE
+  ifconfig $interface down
+  iwconfig $interface mode Managed
+  ifconfig $interface up
+  exit 0
+}
+
+setup
+trap tear_down INT
+
+(
+dash -c 'echo $PPID' > $PID_FILE
+while true; do
+  for i in 2 3 4 5 6 7 8 9 10 11 12 13 1; do
+    iwconfig $interface channel $i
+    sleep 1
+  done
+done) &
+
+tshark -i $interface -T fields \
+   -e radiotap.channel.freq -e frame.time_epoch -e wlan.sa \
+   -e radiotap.dbm_antsignal 2> /dev/null

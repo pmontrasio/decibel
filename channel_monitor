@@ -1,0 +1,43 @@
+#!/bin/dash
+
+usage () {
+   echo "usage: channel_monitor interface" 1>&2
+   echo "example: channel_monitor wlan0" 1>&2
+}
+
+# You need this to run this script without being root
+# sudo setcap 'CAP_NET_ADMIN+eip' /sbin/iwconfig
+# sudo setcap 'CAP_NET_ADMIN+eip' /sbin/ifconfig
+#
+# Restore the original capabilities with
+# sudo setcap -r /sbin/iwconfig
+# sudo setcap -r /sbin/ifconfig
+
+interface=$1
+if [ -z $interface ]; then
+  usage
+  exit 0
+fi
+
+DIR=$( cd $( dirname -- "$0" ) > /dev/null ; pwd )
+
+setup () {
+  ifconfig $interface down
+  iwconfig $interface mode Monitor
+  ifconfig $interface up
+  iwconfig $interface channel 8 # TODO get the channel as command line argument
+}
+
+tear_down () {
+  ifconfig $interface down
+  iwconfig $interface mode Managed
+  ifconfig $interface up
+  exit 0
+}
+
+setup
+trap tear_down INT HUP 0
+
+tshark -i $interface -T fields \
+   -e radiotap.channel.freq -e frame.time_epoch -e wlan.sa \
+   -e radiotap.dbm_antsignal 2> /dev/null
