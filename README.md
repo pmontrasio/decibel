@@ -18,8 +18,21 @@ Dependency: nvm https://github.com/creationix/nvm
     npm install
     cd ../..
 
+See the paragraph about capabilities at the end for an explanation about these two lines:
+
+    sudo setcap 'CAP_NET_ADMIN+eip' /sbin/iwconfig
+    sudo setcap 'CAP_NET_ADMIN+eip' /sbin/ifconfig
+
+Add the user to the wireshark group, to let it sniff packets
+
+    sudo dpkg-reconfigure wireshark-common
+    sudo usermod -a -G wireshark $USER
+
+Leave the shell and reconnect to get a connection with the wireshark group id.
+
 ## Run
 
+cd beacon
 nvm use v5.7.0
 iex -S mix phoenix.server
 KV.Registry.create(KV.Registry, "channels")

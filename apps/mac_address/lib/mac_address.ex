@@ -14,16 +14,21 @@ defmodule MacAddress do
     receive do
 
       {^port, {:data, {:eol, line}}} ->
-        [_, timestamp, mac, dbm] = String.rstrip(line) |> String.split("\t")
-        second = String.split(timestamp, ".") |> List.first
-        {float_dbm, _} = Float.parse(dbm)
-        if second == prev_second do
-          addresses = Map.update(addresses, mac, [float_dbm], &(&1 ++ [float_dbm]))
-        else
-          unless prev_second == :none, do: send_averages(client, addresses)
-          addresses = %{mac => [float_dbm]}
+        case String.rstrip(line) |> String.split("\t") do
+          [_, timestamp, mac, dbm] ->
+            second = String.split(timestamp, ".") |> List.first
+            {float_dbm, _} = Float.parse(dbm)
+            if second == prev_second do
+              addresses = Map.update(addresses, mac, [float_dbm], &(&1 ++ [float_dbm]))
+            else
+              unless prev_second == :none, do: send_averages(client, addresses)
+              addresses = %{mac => [float_dbm]}
+            end
+            detect(port, addresses, second, client)
+
+          _ ->
+            detect(port, addresses, prev_second, client)
         end
-        detect(port, addresses, second, client)
 
       _ -> Port.close(port)
 
