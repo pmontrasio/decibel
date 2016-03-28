@@ -4,8 +4,7 @@ defmodule MacAddress do
   end
 
   def init(client) do
-    #cmd = "/home/montra/phoenix-tests/beacon/channel_hopper2 wlan0"
-    cmd = "/home/montra/phoenix-tests/beacon/channel_monitor wlan0"
+    cmd = System.get_env("TSHARK_CMD")
     port = Port.open({:spawn, cmd}, [:binary, {:line, 1000}])
     detect(port, %{}, :none, client)
   end

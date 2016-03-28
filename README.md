@@ -1,5 +1,25 @@
 # Beacon
 
+## Installation
+
+    git clone ...:beacon
+
+Dependency: nvm https://github.com/creationix/nvm
+
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
+    source .bashrc
+    nvm install v5.7.0
+    nvm use v5.7.0
+    cd beacon
+    mix deps.get
+    iex -S mix phoenix.server # to install dependencies and compile Elixir files
+    ^C^C
+    cd apps/decibel
+    npm install
+    cd ../..
+
+## Run
+
 nvm use v5.7.0
 iex -S mix phoenix.server
 KV.Registry.create(KV.Registry, "channels")
@@ -22,6 +42,18 @@ http://ask.xmodulo.com/disable-desktop-gui-raspberry-pi.html
 Use the arrows to move to 3. Boot options. Press ENTER.
 Select the option and use TAB to move to OK. Then ENTER.
 The TAB to Finish, press ENTER.
+
+# Access Point on the Raspberry
+
+Follow the instructions at
+
+http://elinux.org/RPI-Wireless-Hotspot (steps 1, 2, 3 and 5)
+
+and at
+
+https://www.raspberrypi.org/forums/viewtopic.php?t=137932&p=920070#p919980
+
+We don't need step 4 because we don't want to get out on the Internet.
 
 # WiFi adapters with monitor mode
 
