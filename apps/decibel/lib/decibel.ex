@@ -37,6 +37,7 @@ defmodule Decibel do
           {:ok, channel_store} = KV.Registry.lookup(KV.Registry, "channels")
           uuid = KV.Store.get(channel_store, mac_address)
           unless uuid == nil do
+            IO.puts("Send #{average_dbm} to '#{mac_address}'")
             Decibel.Endpoint.broadcast! "rooms:" <> to_string(uuid), "dbm", %{dbm: average_dbm}
           end
         end)

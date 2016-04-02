@@ -1,0 +1,17 @@
+#gauge_container {
+    width: 600px;
+    height: 300px;
+    text-align: center;
+    margin: auto;
+}
+
+#gauge {
+    width: 100%;
+    height: 100%;
+}
+
+#dbm {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+}

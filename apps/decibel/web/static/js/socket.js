@@ -57,10 +57,39 @@ socket.connect()
 let uuid = document.getElementById("uuid").value;
 let channel = socket.channel("rooms:" + uuid, {});
 let dbmContainer = document.getElementById("dbm");
+let opts = {
+  lines: 12,
+  angle: 0.0,
+  lineWidth: 0.44,
+  pointer: {
+    length: 0.7,
+    strokeWidth: 0.035,
+    color: "#000000"
+  },
+  limitMax: "true",
+  percentColors: [[0.0, "#a9d70b" ], [0.50, "#f9c802"], [1.0, "#ff0000"]],
+  strokeColor: "#E0E0E0",
+  generateGradient: true
+};
+let target = document.getElementById("gauge");
+let gauge = new Gauge(target).setOptions(opts);
+gauge.maxValue = 100;
+gauge.animationSpeed = 1;
+gauge.set(0.0);
+window.gauge_xy = gauge;
+
 channel.on("dbm", payload => {
-  let el = document.createElement("p");
-  el.textContent = payload.dbm;
-  dbmContainer.insertBefore(el, dbmContainer.firstChild);
+  var dbm = payload.dbm;
+  if (dbm <= 0.0) {
+    let dbmString = "" + dbm;
+    let decimalPointPosition = dbmString.indexOf(".");
+    if (decimalPointPosition == -1) {
+      dbmContainer.textContent = dbmString + ".0 dBm";
+    } else {
+      dbmContainer.textContent = dbmString.substring(0, 5) + " dBm";
+    }
+    gauge.set(-dbm);
+  }
 });
 
 channel.join()
@@ -68,4 +97,4 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp); });
 
 
-export default socket
+export default socket;

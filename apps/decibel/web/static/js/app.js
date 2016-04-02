@@ -14,7 +14,8 @@
 import "phoenix_html"
 
 // Import local files
-//
+//import Gauge from "web/static/vendor/gauge.min.js"
+
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 

@@ -15,4 +15,5 @@
 <p>0 dBm = 0.001 W, -10 dBm = 0.0001 W, -20 dBm = 0.00001 ...
   -<i>&lt;n&gt;</i>0 dBm = 0.000 <i>&lt;n zeros&gt;</i> 1 W</p>
 <input type="hidden" value="<%= @uuid %>" id="uuid">
+<div id="gauge_container"><canvas id="gauge"></canvas></div>
 <div id="dbm"></div>
