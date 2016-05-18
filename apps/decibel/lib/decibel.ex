@@ -1,10 +1,16 @@
 defmodule Decibel do
   use Application
+  import KV
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
+
+    _ = spawn fn -> init_registries end
+    {:ok, _} = Arp.Table.start_link()
+    display_pid = spawn fn -> display end
+    {:ok, _} = MacAddress.start_link(display_pid)
 
     children = [
       # Start the endpoint when the application starts
@@ -26,6 +32,11 @@ defmodule Decibel do
   def config_change(changed, _new, removed) do
     Decibel.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  def init_registries do
+    KV.Registry.create(KV.Registry, "channels")
+    KV.Registry.create(KV.Registry, "addresses")
   end
 
   def display do
