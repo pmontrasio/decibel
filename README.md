@@ -37,12 +37,8 @@ Leave the shell and reconnect to get a connection with the wireshark group id.
 cd beacon
 nvm use v5.7.0
 source .env
-iex -S mix phoenix.server
-KV.Registry.create(KV.Registry, "channels")
-KV.Registry.create(KV.Registry, "addresses")
-{:ok, _} = Arp.Table.start_link()
-{:ok, ma} = MacAddress.start_link(self())
-Decibel.display
+mix phoenix.server
+# or iex -S mix phoenix.server to play with the KV.Registry processes and the Arp.Table
 
 From another device:
 
