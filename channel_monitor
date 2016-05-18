@@ -2,7 +2,7 @@
 
 usage () {
    echo "usage: channel_monitor interface" 1>&2
-   echo "example: channel_monitor wlan0" 1>&2
+   echo "example: channel_monitor $WLAN0" 1>&2
 }
 
 # You need this to run this script without being root
