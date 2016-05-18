@@ -5,6 +5,8 @@ defmodule MacAddress do
 
   def init(client) do
     cmd = System.get_env("TSHARK_CMD")
+    # Documentation about the settings argument at
+    # http://erlang.org/doc/man/erlang.html#open_port-2
     port = Port.open({:spawn, cmd}, [:binary, {:line, 1000}, :exit_status])
     detect(port, %{}, :none, client)
   end
