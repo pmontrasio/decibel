@@ -1,4 +1,4 @@
-defmodule Arp.Supervisor do
+defmodule MacAddress.Supervisor do
   use Supervisor
 
   def start_link do
@@ -7,7 +7,7 @@ defmodule Arp.Supervisor do
 
   def init(:ok) do
     children = [
-      supervisor(Arp.Table.Supervisor, [])
+      supervisor(MacAddress.Supervisor, [])
     ]
 
     supervise(children, strategy: :rest_for_one)

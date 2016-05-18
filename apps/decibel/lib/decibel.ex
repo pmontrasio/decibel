@@ -8,11 +8,11 @@ defmodule Decibel do
     import Supervisor.Spec, warn: false
 
     _ = spawn fn -> init_registries end
-    {:ok, _} = Arp.Table.start_link()
     display_pid = spawn fn -> display end
-    {:ok, _} = MacAddress.start_link(display_pid)
 
     children = [
+      supervisor(Arp.Table, []),
+      supervisor(MacAddress, [display_pid]),
       # Start the endpoint when the application starts
       supervisor(Decibel.Endpoint, []),
       # Start the Ecto repository
