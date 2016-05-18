@@ -5,13 +5,17 @@ defmodule MacAddress do
 
   def init(client) do
     cmd = System.get_env("TSHARK_CMD")
-    port = Port.open({:spawn, cmd}, [:binary, {:line, 1000}])
+    port = Port.open({:spawn, cmd}, [:binary, {:line, 1000}, :exit_status])
     detect(port, %{}, :none, client)
   end
 
 
   defp detect(port, addresses, prev_second, client) do
     receive do
+
+# No need for this, but it gets called
+#      {^port, {:exit_status, status}} ->
+#        IO.puts "exit"
 
       {^port, {:data, {:eol, line}}} ->
         case String.rstrip(line) |> String.split("\t") do
@@ -30,7 +34,8 @@ defmodule MacAddress do
             detect(port, addresses, prev_second, client)
         end
 
-      _ -> Port.close(port)
+      _ ->
+        Port.close(port)
 
     end
   end
