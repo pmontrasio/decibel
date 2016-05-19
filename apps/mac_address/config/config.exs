@@ -7,6 +7,8 @@ use Mix.Config
 # file won't be loaded nor affect the parent project. For this reason,
 # if you want to provide default values for your application for
 # 3rd-party users, it should be done in your "mix.exs" file.
+#config :mac_address, tshark_cmd: "/home/montra/phoenix-tests/beacon/channel_monitor wlan1" # pre-systemd interface name
+config :mac_address, tshark_cmd: "/home/montra/phoenix-tests/beacon/channel_monitor wlo1" # systemd interface name
 
 # You can configure for your application as:
 #

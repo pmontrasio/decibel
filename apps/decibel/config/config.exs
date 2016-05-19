@@ -7,9 +7,7 @@ use Mix.Config
 
 # Configures the endpoint
 config :decibel, Decibel.Endpoint,
-  url: [host: [System.get_env("IPv4_HOST_ADDRESS")]],
   root: Path.dirname(__DIR__),
-  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [accepts: ~w(html json)],
   pubsub: [name: Decibel.PubSub,
            adapter: Phoenix.PubSub.PG2]
