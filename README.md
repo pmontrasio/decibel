@@ -1,8 +1,6 @@
-# Beacon
+# Decibel
 
 ## Installation
-
-    git clone ...:beacon
 
     sudo apt-get install tshark
 
@@ -12,7 +10,9 @@ Dependency: nvm https://github.com/creationix/nvm
     source .bashrc
     nvm install v5.7.0
     nvm use v5.7.0
-    cd beacon
+    git https://github.com/pmontrasio/decibel
+    cd decibel
+    echo "v5.7.0" > .nvmrc
     mix deps.get
     iex -S mix phoenix.server # to install dependencies and compile Elixir files
     ^C^C
@@ -34,7 +34,7 @@ Leave the shell and reconnect to get a connection with the wireshark group id.
 
 ## Run
 
-cd beacon
+cd decibel
 nvm use v5.7.0
 source .env
 mix phoenix.server
