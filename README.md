@@ -1,5 +1,9 @@
 # Decibel
 
+Demoed at http://www.italian-elixir.org/ running on a Raspberry Pi 3.
+
+Slides at https://connettiva.eu/elixirday2016/
+
 ## Installation
 
     sudo apt-get install tshark
@@ -59,9 +63,17 @@ Use the arrows to move to 3. Boot options. Press ENTER.
 Select the option and use TAB to move to OK. Then ENTER.
 The TAB to Finish, press ENTER.
 
+
+# The next part of this document
+
+What follows is a not very organized list of interesting points and discoveries made during the coding of this application.
+It's provided here because it could be useful to other people experimenting in this area.
+
 # Access Point on the Raspberry
 
-Follow the instructions at
+An alternate setup would be having the Raspberry as Access Point and server. It wouldn't require an external AP.
+
+I didn't manage to make it run but apparently the instructions at
 
 http://elinux.org/RPI-Wireless-Hotspot (steps 1, 2, 3 and 5)
 
@@ -69,7 +81,10 @@ and at
 
 https://www.raspberrypi.org/forums/viewtopic.php?t=137932&p=920070#p919980
 
-We don't need step 4 because we don't want to get out on the Internet.
+are correct.
+
+We don't need step 4 of the latter document because we don't want to get out on the Internet.
+
 
 # WiFi adapters with monitor mode
 
@@ -90,8 +105,11 @@ The good chips apparently are
 https://github.com/raspberrypi/linux/issues/369
 It seems that the driver for the rtl8192cu works now.
 
+I got a TP-LINK TL-WN722N which work well. Only 2.4 GHz band.
+
 # Setup monitor mode
 
+## With virtual card
 
 We add a virtual card to wlo1 and set it to monitor mode
 
@@ -114,6 +132,56 @@ The output should be something like this
        -e radiotap.dbm_antsignal -e wlan.fc.type -e wlan.fc.subtype
     sudo ifconfig mon0 down
     sudo iw dev mon0 del
+
+
+## With the physical card
+
+This is what I ended up doing.
+
+### systemd (Ubuntu 16.04)
+
+    sudo service wpa_supplicant stop
+    sudo ifconfig wlo1 down
+    sudo iwconfig wlo1 mode Monitor   
+    sudo ifconfig wlo1 up
+    sudo service wpa_supplicant start
+
+This means that only stopping and starting should be done manually.
+The other commands are run by ```channel_monitor```.
+
+
+### non systemd (Ubuntu 12.04 and Raspbian)
+
+Enable the wireless network from the network manager and
+
+    sudo ifconfig wlan0 down
+
+but it keeps going back up
+
+    sudo wpa_cli -i wlan0 terminate
+
+doesn't stop it.
+
+Disabling wireless with
+
+    sudo iwconfig wlan0 mode Monitor
+    sudo ifconfig wlan0 up
+    SIOCSIFFLAGS: Operation not possible due to RF-kill
+
+but
+
+    rfkill unblock wlan0
+    sudo ifconfig wlan0 up
+
+works. Now
+
+    sudo iwconfig wlan0 channel 2
+    iwlist wlan0 channel | grep "Current Frequency"
+
+works.
+
+
+# Using tshark
 
 Interesting fields:
 
@@ -173,7 +241,7 @@ http://www.radio-electronics.com/info/wireless/wi-fi/80211-channels-number-frequ
 
 # TODO
 
-1) Implement channel hopping, to detect packets on all channels.
+1) Implement channel hopping, to detect packets on all channels (some Wi-Fi networks use more than one channel).
 
     sudo ifconfig wlan1 down
     sudo iwconfig wlan1 mode Monitor
@@ -208,50 +276,7 @@ You don't need to kill the wpa_supplicant process, but if you have to here's how
     sudo /sbin/wpa_supplicant -s -B -P /run/wpa_supplicant.wlan1.pid -i wlan1 \
        -D nl80211,wext -c /etc/wpa_supplicant/wpa_supplicant.conf
 
-
-# On the ZBook
-
-With Ubuntu 16.04
-
-    sudo service wpa_supplicant stop
-    sudo ifconfig wlo1 down
-    sudo iwconfig wlo1 mode Monitor   
-    sudo ifconfig wlo1 up
-    sudo service wpa_supplicant start
-
-This means that only stopping and starting should be done manually.
-The other commands are run by ```channel_monitor```.
-
-
-With Ubuntu 12.04
-
-Enable the wireless network from the network manager and
-
-    sudo ifconfig wlo1 down
-
-but it keeps going back up
-
-    sudo wpa_cli -i wlo1 terminate
-
-doesn't stop it.
-
-Disabling wireless with
-
-    sudo iwconfig wlo1 mode Monitor
-    sudo ifconfig wlo1 up
-    SIOCSIFFLAGS: Operation not possible due to RF-kill
-
-but
-
-    rfkill unblock wlo1
-    sudo ifconfig wlo1 up
-
-works. Now
-
-    sudo iwconfig wlo1 channel 2
-    iwlist wlo1 channel | grep "Current Frequency"
-
-works.
+# Channel hopping
 
 This is the basic channel hopping script
 
@@ -259,7 +284,9 @@ This is the basic channel hopping script
       sudo iwconfig wlo1 channel $i
       tshark -i wlo1 -f 'broadcast' -T fields -e frame.time_epoch -e wlan.sa \
         -e radiotap.dbm_antsignal -e wlan.fc.type -e wlan.fc.subtype
+      # wait some time
     done
+    # start again
 
 To shut it down
 
