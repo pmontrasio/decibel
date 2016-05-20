@@ -1,12 +1,17 @@
-About this branch:
+# About this branch:
 
 It doesn't build a release. See https://github.com/bitwalker/exrm/issues/326
 
-References
+## References
 
 https://medium.com/@diamondgfx/deploying-phoenix-applications-with-exrm-97a3867ebd04#.j451l0u36
 
 https://github.com/bitwalker/exrm-umbrella-test/
+
+
+## TODO
+
+Add channel_monitor to the release.
 
 
 # Decibel
