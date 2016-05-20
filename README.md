@@ -1,8 +1,20 @@
-# Beacon
+About this branch:
+
+It doesn't build a release. See https://github.com/bitwalker/exrm/issues/326
+
+References
+
+https://medium.com/@diamondgfx/deploying-phoenix-applications-with-exrm-97a3867ebd04#.j451l0u36
+
+https://github.com/bitwalker/exrm-umbrella-test/
+
+
+# Decibel
+
+Demoed at http://www.italian-elixir.org/ running on a Raspberry Pi 3.
 
 ## Installation
 
-    git clone ...:beacon
 
     sudo apt-get install tshark
 
@@ -12,7 +24,9 @@ Dependency: nvm https://github.com/creationix/nvm
     source .bashrc
     nvm install v5.7.0
     nvm use v5.7.0
-    cd beacon
+    git clone git@github.com:pmontrasio/decibel.git
+    cd decibel
+    echo "v5.7.0" > .nvmrc
     mix deps.get
     iex -S mix phoenix.server # to install dependencies and compile Elixir files
     ^C^C
@@ -34,7 +48,7 @@ Leave the shell and reconnect to get a connection with the wireshark group id.
 
 ## Run
 
-cd beacon
+cd decibel
 nvm use v5.7.0
 source .env
 mix phoenix.server

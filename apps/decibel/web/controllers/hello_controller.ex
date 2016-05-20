@@ -1,6 +1,5 @@
 defmodule Decibel.HelloController do
   use Decibel.Web, :controller
-  import KV
 
   def index(conn, _params) do
     ip_address = Enum.join(Tuple.to_list(conn.remote_ip), ".")

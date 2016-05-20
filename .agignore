@@ -1,3 +1,5 @@
 *~
 node_modules/
 apps/decibel/priv/
+rel/
+apps/decibel/web/static/css/app.css
