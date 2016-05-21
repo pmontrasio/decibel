@@ -15,9 +15,9 @@ defmodule MacAddress do
   defp detect(port, addresses, prev_second, client) do
     receive do
 
-# No need for this, but it gets called
-#      {^port, {:exit_status, status}} ->
-#        IO.puts "exit"
+      # Trap the port close event so we don't have errors in the log
+      {^port, {:exit_status, status}} ->
+        IO.puts "exit"
 
       {^port, {:data, {:eol, line}}} ->
         case String.rstrip(line) |> String.split("\t") do
