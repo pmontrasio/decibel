@@ -1,6 +1,7 @@
 defmodule MacAddress do
-  def start_link(client) do
-    Task.start_link(fn -> init(client) end)
+  def start_link() do
+    display_pid = spawn fn -> Decibel.display end
+    Task.start_link(fn -> init(display_pid) end)
   end
 
   def init(client) do
@@ -15,9 +16,9 @@ defmodule MacAddress do
   defp detect(port, addresses, prev_second, client) do
     receive do
 
-# No need for this, but it gets called
-#      {^port, {:exit_status, status}} ->
-#        IO.puts "exit"
+    # No need for this, but it gets called
+      {^port, {:exit_status, status}} ->
+        IO.puts "exit"
 
       {^port, {:data, {:eol, line}}} ->
         case String.rstrip(line) |> String.split("\t") do
