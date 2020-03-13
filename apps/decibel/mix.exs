@@ -35,7 +35,7 @@ defmodule Decibel.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [{:kv_server, in_umbrella: true},
-     {:phoenix, "~> 1.1.4"},
+     {:phoenix, "~> 1.4.15"},
      {:postgrex, ">= 0.0.0"},
      {:phoenix_ecto, "~> 2.0"},
      {:phoenix_html, "~> 2.4"},
